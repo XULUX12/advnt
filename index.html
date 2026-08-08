@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>An Adventure to XUL's Heart ♡</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Quicksand:wght@400;500;600&display=swap');
+*{box-sizing:border-box}html,body{margin:0;background:#fff7fb;color:#553c4e;font-family:Quicksand,sans-serif}
+.screen{display:none;min-height:100vh;align-items:center;justify-content:center;text-align:center;padding:28px 18px;position:relative;overflow:hidden}
+.screen.active{display:flex;animation:fade .7s ease}@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.bg{position:absolute;inset:0}.card{position:relative;z-index:2;width:min(820px,94vw)}
+.kicker{text-transform:uppercase;letter-spacing:.25em;font-size:11px;color:#b8789c;font-weight:600}
+h1,h2{font-family:"Cormorant Garamond",serif;font-weight:500;color:#6a3e59}
+h1{font-size:clamp(48px,8vw,88px);line-height:.9;margin:18px 0}h2{font-size:clamp(35px,5vw,58px);margin:12px 0}
+p{font-size:17px;line-height:1.85;color:#745c6d}.story{max-width:720px;margin:auto;padding:28px 34px;border-radius:28px;background:#ffffffbd;border:1px solid #efd6e2;box-shadow:0 20px 60px #a65d8222;backdrop-filter:blur(8px)}
+.btn{border:1px solid #d5a2bd;background:#fffafd;color:#7b4c68;border-radius:999px;padding:13px 24px;cursor:pointer;box-shadow:0 8px 25px #b96e9220;transition:.2s}.btn:hover{transform:translateY(-2px);background:#fff0f7}
+.ill{width:min(570px,94vw);height:260px;margin:0 auto 8px}.fairy{animation:float 3s ease-in-out infinite}@keyframes float{50%{transform:translateY(-7px)}}
+.star{animation:twinkle 2s infinite alternate}@keyframes twinkle{to{opacity:.2}}
+.progress{position:fixed;z-index:20;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:7px}.dot{width:7px;height:7px;border-radius:50%;background:#e4c7d6}.dot.on{background:#b86a93;transform:scale(1.35)}
+.choice{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px}.choice .btn{border-radius:16px}
+.heart{width:90px;height:90px;margin:5px auto 55px;background:linear-gradient(135deg,#ffc0dc,#e985b1);transform:rotate(-45deg);border-radius:18px;box-shadow:0 0 38px #ec8ab755;animation:beat 1.7s infinite}.heart:before,.heart:after{content:"";position:absolute;width:90px;height:90px;background:inherit;border-radius:50%}.heart:before{top:-45px}.heart:after{left:45px}@keyframes beat{50%{transform:rotate(-45deg) scale(1.08)}}
+@media(max-width:600px){.story{padding:23px 19px}.story p{font-size:15px}.ill{height:220px}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<section class="screen active" id="s0"><div class="bg" style="background:radial-gradient(circle at 50% 40%,#f8ddec,#fff7fb 62%)"></div><div class="card">
+<div class="kicker">a tiny story made for you</div>
+<div class="ill"><svg viewBox="0 0 600 280" width="100%" height="100%">
+<circle cx="490" cy="62" r="38" fill="#fff0c8"/><g class="star" fill="#fff"><circle cx="95" cy="65" r="3"/><circle cx="160" cy="115" r="2"/><circle cx="390" cy="45" r="2"/><circle cx="540" cy="135" r="2"/></g>
+<path d="M0 230Q120 180 220 220T430 210T600 235V280H0Z" fill="#d9ead8"/>
+<g class="fairy" transform="translate(300 165)"><ellipse cx="-38" cy="-4" rx="34" ry="56" fill="#d7f1f2" opacity=".8"/><ellipse cx="38" cy="-4" rx="34" ry="56" fill="#d7f1f2" opacity=".8"/><path d="M-18 25Q0 5 18 25L29 76H-29Z" fill="#efa7c9"/><circle cy="2" r="18" fill="#f4c5ad"/><path d="M-20 3Q0-32 20 3L14 20Q0 9-14 20Z" fill="#593550"/></g></svg></div>
+<h1>An Adventure<br>to XUL's Heart</h1><p>A little fairy. A quiet forest. And a heart she somehow found her way to.</p><button class="btn" onclick="go(1)">Begin the adventure ♡</button>
+</div></section>
+
+<section class="screen" id="s1"><div class="bg" style="background:linear-gradient(#12142c,#2b2b4b 55%,#d2b4bd)"></div><div class="card">
+<div class="ill"><svg viewBox="0 0 600 280" width="100%" height="100%"><circle cx="485" cy="58" r="34" fill="#fff0c8"/><g fill="#fff" class="star"><circle cx="90" cy="55" r="2"/><circle cx="150" cy="90" r="2"/><circle cx="370" cy="50" r="2"/><circle cx="540" cy="105" r="2"/></g><path d="M0 230Q100 175 210 215T400 210T600 225V280H0Z" fill="#14231f"/><g fill="#12211d"><path d="M65 230L95 85L125 230Z"/><path d="M135 230L165 70L195 230Z"/><path d="M430 230L460 75L490 230Z"/><path d="M505 230L535 105L565 230Z"/></g><g class="fairy" transform="translate(290 190) scale(.85)"><ellipse cx="-34" cy="-12" rx="30" ry="50" fill="#cdeef0" opacity=".75"/><ellipse cx="34" cy="-12" rx="30" ry="50" fill="#cdeef0" opacity=".75"/><path d="M-18 20Q0 2 18 20L28 70H-28Z" fill="#eda1c6"/><circle cy="0" r="16" fill="#f3c1a9"/><path d="M-18 0Q0-28 18 0L14 15Q0 7-14 15Z" fill="#583550"/></g></svg></div>
+<div class="story"><div class="kicker">the whispering forest</div><h2>Once upon a night...</h2><p>There was a heart that had grown very quiet.</p><p>Not because it was cold. Not because it had nothing to give.</p><p>It had simply spent a long time protecting all the soft things inside it.</p><button class="btn" onclick="go(2)">Keep walking →</button></div>
+</div></section>
+
+<section class="screen" id="s2"><div class="bg" style="background:linear-gradient(#18152f,#4a355b 58%,#d8b7ca)"></div><div class="card">
+<div class="ill"><svg viewBox="0 0 600 280" width="100%" height="100%"><path d="M0 255Q130 180 270 240T600 220V280H0Z" fill="#304d45"/><g fill="#ffe49a" class="star"><circle cx="115" cy="180" r="4"/><circle cx="180" cy="125" r="3"/><circle cx="230" cy="195" r="5"/><circle cx="355" cy="140" r="3"/><circle cx="425" cy="195" r="4"/><circle cx="500" cy="115" r="3"/></g><g class="fairy" transform="translate(300 190)"><ellipse cx="-34" cy="-10" rx="31" ry="52" fill="#d8f7f4" opacity=".8"/><ellipse cx="34" cy="-10" rx="31" ry="52" fill="#d8f7f4" opacity=".8"/><path d="M-19 20Q0 2 19 20L29 72H-29Z" fill="#efa6c9"/><circle cy="0" r="16" fill="#f3c1a9"/><path d="M-18 0Q0-28 18 0L14 15Q0 7-14 15Z" fill="#583550"/></g></svg></div>
+<div class="story"><div class="kicker">then fairy arrived</div><h2>She brought a little light.</h2><p>Fairy didn't know what she was looking for.</p><p>She only knew that every time she followed a firefly, the forest felt a little less lonely.</p><p>So she kept going.</p><button class="btn" onclick="go(3)">Follow the lights ✨</button></div>
+</div></section>
+
+<section class="screen" id="s3"><div class="bg" style="background:radial-gradient(circle at 50% 45%,#f5d9e7,#fff7fb 68%)"></div><div class="card">
+<div class="ill"><svg viewBox="0 0 600 280" width="100%" height="100%"><path d="M100 250Q300 140 500 250" fill="none" stroke="#cda2bb" stroke-width="10"/><g class="star" fill="#ffd978"><circle cx="160" cy="150" r="5"/><circle cx="230" cy="110" r="4"/><circle cx="310" cy="135" r="5"/><circle cx="390" cy="95" r="4"/><circle cx="460" cy="150" r="5"/></g><path d="M190 235Q300 160 410 235" fill="none" stroke="#8d607e" stroke-width="12"/><g class="fairy" transform="translate(300 175) scale(.8)"><ellipse cx="-34" cy="-10" rx="30" ry="48" fill="#d8f7f4" opacity=".8"/><ellipse cx="34" cy="-10" rx="30" ry="48" fill="#d8f7f4" opacity=".8"/><path d="M-19 20Q0 2 19 20L29 72H-29Z" fill="#efa6c9"/><circle cy="0" r="16" fill="#f3c1a9"/><path d="M-18 0Q0-28 18 0L14 15Q0 7-14 15Z" fill="#583550"/></g></svg></div>
+<div class="story"><div class="kicker">the old gate</div><h2>And then she found it.</h2><p>An old gate stood quietly at the end of the path.</p><p>Beyond it was a wall.</p><p>A very big wall.</p><p>And behind that wall was the heart Fairy had been searching for.</p><button class="btn" onclick="go(4)">Go to the wall →</button></div>
+</div></section>
+
+<section class="screen" id="s4"><div class="bg" style="background:linear-gradient(#201426,#382039 55%,#17101e)"></div><div class="card">
+<div class="ill"><svg viewBox="0 0 600 280" width="100%" height="100%"><rect x="110" y="45" width="380" height="205" rx="8" fill="#302034" stroke="#8d5b7b" stroke-width="5"/><path d="M180 45V250M250 45V250M320 45V250M390 45V250M460 45V250" stroke="#5b3c56" stroke-width="5"/><path d="M300 135C270 100 220 130 300 195C380 130 330 100 300 135Z" fill="#ff9fc5" opacity=".18"/><g class="fairy" transform="translate(300 250) scale(.62)"><ellipse cx="-34" cy="-15" rx="30" ry="50" fill="#d8f7f4" opacity=".75"/><ellipse cx="34" cy="-15" rx="30" ry="50" fill="#d8f7f4" opacity=".75"/><path d="M-19 20Q0 2 19 20L29 72H-29Z" fill="#efa6c9"/><circle cy="0" r="16" fill="#f3c1a9"/><path d="M-18 0Q0-28 18 0L14 15Q0 7-14 15Z" fill="#583550"/></g></svg></div>
+<div class="story"><div class="kicker">the wall around xul's heart</div><h2>She could have tried to break it.</h2><p>But Fairy stopped.</p><p>Because some walls aren't meant to be destroyed.</p><p>Sometimes, all they need is someone patient enough to stand outside them and say:</p><p><em>“I'm here.”</em></p><div class="choice"><button class="btn" onclick="go(5)">♡ Knock gently</button><button class="btn" onclick="go(5)">✦ Leave a little light</button></div></div>
+</div></section>
+
+<section class="screen" id="s5"><div class="bg" style="background:radial-gradient(circle at 50% 45%,#ffdce9,#fff7fb 70%)"></div><div class="card">
+<div class="ill"><svg viewBox="0 0 600 280" width="100%" height="100%"><circle cx="300" cy="140" r="92" fill="#ffb5d4" opacity=".18"/><path d="M300 90C265 50 190 90 300 200C410 90 335 50 300 90Z" fill="#f49ac2" style="filter:drop-shadow(0 0 18px #f49ac2)"/><g class="star" fill="#fff"><circle cx="200" cy="100" r="3"/><circle cx="400" cy="90" r="3"/><circle cx="240" cy="205" r="2"/><circle cx="360" cy="215" r="2"/></g><g class="fairy" transform="translate(300 240) scale(.55)"><ellipse cx="-34" cy="-15" rx="30" ry="50" fill="#d8f7f4" opacity=".75"/><ellipse cx="34" cy="-15" rx="30" ry="50" fill="#d8f7f4" opacity=".75"/><path d="M-19 20Q0 2 19 20L29 72H-29Z" fill="#efa6c9"/><circle cy="0" r="16" fill="#f3c1a9"/><path d="M-18 0Q0-28 18 0L14 15Q0 7-14 15Z" fill="#583550"/></g></svg></div>
+<div class="story"><div class="kicker">and finally...</div><h2>The wall opened.</h2><p>Not all at once.</p><p>Just enough for a little light to slip through.</p><p>Fairy smiled and stepped inside.</p><p>And there it was — a heart that wasn't dark at all.</p><p>It had simply been waiting for the right little light to find it.</p><button class="btn" onclick="go(6)">Enter the heart ♡</button></div>
+</div></section>
+
+<section class="screen" id="s6"><div class="bg" style="background:radial-gradient(circle at 50% 45%,#ffeaf3,#fff7fb 70%)"></div><div class="card"><div class="heart"></div><div class="kicker">adventure complete</div><h1>Fairy found her way<br>to XUL's heart.</h1><p>She didn't fix it.</p><p>She didn't have to.</p><p>She just made it a little brighter by being there.</p><p style="color:#a56c8d">♡ The end... or perhaps just the beginning. ♡</p></div></section>
+
+<script>
+const progress=document.getElementById('progress');
+for(let i=0;i<7;i++){let d=document.createElement('i');d.className='dot';progress.appendChild(d)}
+function go(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('s'+n).classList.add('active');[...progress.children].forEach((d,i)=>d.classList.toggle('on',i===n));scrollTo(0,0)}
+go(0);
+</script>
+</body>
+</html>
