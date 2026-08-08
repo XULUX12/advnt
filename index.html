@@ -6,11 +6,11 @@
     <title>An Adventure to XUL's Heart</title>
     <style>
         :root {
-            --bg-color: #080711;
             --accent-gold: #ffd700;
             --accent-pink: #ff758c;
             --text-color: #e2e8f0;
-            --card-bg: rgba(20, 18, 38, 0.75);
+            --card-bg: rgba(20, 18, 38, 0.6);
+            --transition-speed: 1.5s;
         }
 
         * {
@@ -21,27 +21,49 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: #080711; /* Fallback */
             color: var(--text-color);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            transition: background-color 2s ease;
+            position: relative;
         }
 
-        /* Particle Canvas background */
+        /* --- VISUAL BACKGROUND LAYER --- */
+        #background-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-image: url('assets/dark_background.jpg'); /* YOUR IMAGE HERE */
+            background-size: cover;
+            background-position: center;
+            transition: background-image var(--transition-speed) ease-in-out, filter var(--transition-speed) ease-in-out;
+            filter: grayscale(80%) brightness(50%); /* Start dark and colorless */
+        }
+
+        /* Class to apply when the heart warms up */
+        body.warmed-up #background-layer {
+            background-image: url('assets/warm_background.jpg'); /* YOUR TRANSFORMED IMAGE */
+            filter: grayscale(0%) brightness(100%);
+        }
+
+        /* Floating Particle Canvas background (kept from before, looks great) */
         #canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
+            z-index: -1;
             pointer-events: none;
         }
 
+        /* --- MAIN UI CONTAINER --- */
         .container {
             position: relative;
             z-index: 10;
@@ -49,10 +71,10 @@
             max-width: 600px;
             background: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px); /* Increased blur for better readability */
             border-radius: 20px;
-            padding: 40px 30px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 215, 0, 0.1);
+            padding: 50px 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
             text-align: center;
             transition: all 0.5s ease;
         }
@@ -60,131 +82,231 @@
         .scene {
             display: none;
             opacity: 0;
-            transform: translateY(15px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
         }
 
         .scene.active {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             opacity: 1;
             transform: translateY(0);
         }
 
+        /* --- TEXT STYLES --- */
         h1 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: var(--accent-gold);
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            font-weight: 400;
         }
 
         p {
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             line-height: 1.8;
             color: #cbd5e1;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            max-width: 90%;
         }
 
+        /* --- BUTTON STYLES --- */
         .btn {
-            background: linear-[#ff758c], #ff758c;
             background-image: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
             color: #fff;
             border: none;
-            padding: 14px 28px;
-            font-size: 1rem;
+            padding: 16px 32px;
+            font-size: 1.1rem;
             border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
+            box-shadow: 0 5px 20px rgba(255, 117, 140, 0.4);
             transition: all 0.3s ease;
             outline: none;
-            margin-top: 10px;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: sans-serif; /* Clean font for buttons */
+            font-weight: bold;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 117, 140, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 117, 140, 0.6);
         }
 
-        /* Avatar Selection */
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* --- VISUAL AVATAR SELECTION --- */
         .avatar-container {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
         }
 
         .avatar-card {
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 120px;
+            width: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .avatar-card:hover, .avatar-card.selected {
             border-color: var(--accent-gold);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-            background: rgba(255, 215, 0, 0.05);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            background: rgba(255, 215, 0, 0.08);
+            transform: scale(1.05);
         }
 
-        .avatar-icon {
-            font-size: 2.5rem;
-            margin-bottom: 8px;
+        /* YOUR AVATAR IMAGE STYLES */
+        .avatar-img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+            transition: filter 0.3s ease;
+        }
+
+        .avatar-card.selected .avatar-img {
+            filter: drop-shadow(0 0 15px var(--accent-gold));
+            animation: fairy-bob 2s infinite ease-in-out;
         }
 
         .avatar-name {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--accent-gold);
+            font-weight: bold;
+            font-family: sans-serif;
         }
 
-        /* Interactive Elements */
-        .orb {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #fff 0%, #ffd700 60%, transparent 100%);
-            box-shadow: 0 0 25px #ffd700;
-            margin: 20px auto;
+        @keyframes fairy-bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* --- INTERACTIVE HEART CORE (Scene 3) --- */
+        .heart-core-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 30px auto;
             cursor: pointer;
+        }
+
+        .heart-core {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff 0%, #ff758c 40%, #881133 80%, transparent 100%);
+            box-shadow: 0 0 30px #ff758c, inset 0 0 20px rgba(255,255,255,0.5);
             animation: pulse 2s infinite ease-in-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .heart-core:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px #ff758c, inset 0 0 30px rgba(255,255,255,0.8);
+        }
+
+        /* The fairy icon drifting around the heart */
+        .drifting-fairy {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            top: -20px;
+            left: calc(50% - 20px);
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px white);
+            animation: fairy-drift 4s infinite linear;
+            pointer-events: none; /* Can't click the fairy, only the heart */
         }
 
         @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 15px #ffd700; }
-            50% { transform: scale(1.05); box-shadow: 0 0 35px #ffd700; }
-            100% { transform: scale(0.95); box-shadow: 0 0 15px #ffd700; }
+            0%, 100% { transform: scale(0.95); box-shadow: 0 0 20px #ff758c; }
+            50% { transform: scale(1.05); box-shadow: 0 0 45px #ff758c; }
         }
 
+        @keyframes fairy-drift {
+            0% { transform: rotate(0deg) translate(80px) rotate(0deg); }
+            100% { transform: rotate(360deg) translate(80px) rotate(-360deg); }
+        }
+
+        /* --- SECRET NOTE STYLES (Scene 5) --- */
         .secret-box {
             display: none;
-            margin-top: 20px;
-            padding: 20px;
+            margin-top: 30px;
+            padding: 25px;
             background: rgba(255, 255, 255, 0.05);
-            border-left: 3px solid var(--accent-pink);
-            border-radius: 8px;
+            border-left: 4px solid var(--accent-pink);
+            border-radius: 10px;
             font-style: italic;
+            width: 100%;
+            max-width: 90%;
+            text-align: left;
         }
+
+        /* Typing Effect Class */
+        .typing {
+            overflow: hidden; /* Ensures the content is not revealed until the animation */
+            border-right: .15em solid var(--accent-gold); /* The typwriter cursor */
+            white-space: nowrap; /* Keeps the content on a single line */
+            margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+            letter-spacing: .1em; 
+            animation: 
+              typing 3.5s steps(40, end),
+              blink-caret .75s step-end infinite;
+        }
+
+        /* The typing animation */
+        @keyframes typing {
+          from { width: 0 }
+          to { width: 100% }
+        }
+
+        /* The typewriter cursor animation */
+        @keyframes blink-caret {
+          from, to { border-color: transparent }
+          50% { border-color: var(--accent-gold); }
+        }
+
     </style>
 </head>
-<body>
+<body id="body">
 
+    <!-- The interactive visual background -->
+    <div id="background-layer"></div>
+    
+    <!-- Floating particles layer -->
     <canvas id="canvas"></canvas>
 
     <div class="container">
         
-        <!-- Scene 1: Landing -->
+        <!-- Scene 1: Entrance -->
         <div class="scene active" id="scene-1">
             <h1>An Adventure to XUL's Heart</h1>
             <p>Welcome, wanderer. Before entering this forgotten realm, choose the fairy form that represents you:</p>
             
             <div class="avatar-container">
-                <div class="avatar-card selected" onclick="selectAvatar('Starlight Fairy', '✨', this)">
-                    <div class="avatar-icon">✨</div>
-                    <div class="avatar-name">Starlight Fairy</div>
+                <!-- Starlight Fairy Option -->
+                <div class="avatar-card selected" onclick="selectAvatar('Starlight Fairy', 'assets/fairy_starlight.png', this)">
+                    <img src="assets/fairy_starlight.png" alt="Starlight Fairy" class="avatar-img">
+                    <div class="avatar-name">Starlight</div>
                 </div>
-                <div class="avatar-card" onclick="selectAvatar('Flora Fairy', '🌸', this)">
-                    <div class="avatar-icon">🌸</div>
-                    <div class="avatar-name">Flora Fairy</div>
+                <!-- Flora Fairy Option -->
+                <div class="avatar-card" onclick="selectAvatar('Flora Fairy', 'assets/fairy_flora.png', this)">
+                    <img src="assets/fairy_flora.png" alt="Flora Fairy" class="avatar-img">
+                    <div class="avatar-name">Flora</div>
                 </div>
             </div>
 
@@ -194,40 +316,44 @@
         <!-- Scene 2: The Dark Realm -->
         <div class="scene" id="scene-2">
             <h1>The Shadowed Realm</h1>
-            <p>Legend speaks of a quiet, hidden place known as <strong>XUL's Heart</strong>.</p>
-            <p>For a very long time, it was a dark and silent realm—wrapped in cold shadows, forgotten, and cautious of the outside world.</p>
+            <p class="typing">It was a dark and silent realm...</p>
+            <p>Legend speaks of a quiet, hidden place known as <strong>XUL's Heart</strong>. For a long time, it was wrapped in cold shadows, forgotten, and cautious of the outside world.</p>
             <button class="btn" onclick="nextScene(3)">Step Closer</button>
         </div>
 
         <!-- Scene 3: The Light Appears -->
         <div class="scene" id="scene-3">
-            <h1>A Spark in the Dark</h1>
-            <p>Until one day, a little <span id="chosen-fairy-name">Fairy</span> drifted into the darkness...</p>
-            <p>Tap the spark below to bring light to the darkness.</p>
-            <div class="orb" onclick="igniteLight()"></div>
-            <p id="orb-text" style="font-size: 0.9rem; color: var(--accent-gold); display:none;">
-                *The light blooms, driving away the chill!*
-            </p>
+            <h1>A Spark Appears</h1>
+            <p>Until one day, a little <span id="chosen-fairy-name-text" style="color:var(--accent-gold); font-weight:bold;">Fairy</span> drifted into the darkness.</p>
+            <p>She found the cold, dormant core of XUL's heart. It just needed a touch of magic.</p>
+            
+            <!-- INTERACTIVE HEART CORE -->
+            <div class="heart-core-container" onclick="igniteHeart()">
+                <div class="heart-core"></div>
+                <!-- This image will be set dynamically via JS -->
+                <img src="" alt="Fairy" id="drifting-fairy-icon" class="drifting-fairy">
+            </div>
+
             <button class="btn" id="scene-3-btn" style="display:none;" onclick="nextScene(4)">Continue Forward</button>
         </div>
 
         <!-- Scene 4: The Heart Awakens -->
         <div class="scene" id="scene-4">
-            <h1>A Warm New World</h1>
-            <p>Her light started pushing back the shadows, revealing hidden paths, blooming flowers, and warmth that hadn't existed here in years.</p>
+            <h1 style="color: white; text-shadow: 0 0 15px var(--accent-pink);">The Heart Awakens!</h1>
+            <p>Her light started pushing back the shadows, revealing hidden paths and blooming flowers. A warmth that hadn't existed here in years spread everywhere.</p>
             <p>Because of her, XUL's heart isn't dark anymore. It's filled with bright colors and a quiet joy that grows stronger every day.</p>
             <button class="btn" onclick="nextScene(5)">Reach the Center</button>
         </div>
 
         <!-- Scene 5: Final Note -->
         <div class="scene" id="scene-5">
-            <h1>The Heart of the Adventure</h1>
+            <h1>The Center of the Heart</h1>
             <p>Thank you for finding your way here and bringing light into my world.</p>
             <button class="btn" onclick="revealSecret()">Open Secret Note</button>
             
             <div class="secret-box" id="secret-note">
                 <p>"This adventure was just a small way to show you how much of a difference you make. Thank you for being you."</p>
-                <p style="color: var(--accent-pink); font-weight: bold; margin-top: 10px;">— XUL</p>
+                <p style="color: var(--accent-pink); font-weight: bold; margin-top: 15px; text-align: right;">— XUL</p>
             </div>
         </div>
 
@@ -235,50 +361,86 @@
 
     <script>
         let chosenAvatarName = "Starlight Fairy";
-        let chosenAvatarIcon = "✨";
+        let chosenAvatarImg = "assets/fairy_starlight.png";
 
-        function selectAvatar(name, icon, element) {
+        // 1. Avatar Selection logic
+        function selectAvatar(name, img, element) {
             chosenAvatarName = name;
-            chosenAvatarIcon = icon;
+            chosenAvatarImg = img;
+            
+            // Update UI
             document.querySelectorAll('.avatar-card').forEach(card => card.classList.remove('selected'));
             element.classList.add('selected');
         }
 
+        // 2. Scene Transition logic
         function nextScene(sceneNumber) {
-            document.querySelectorAll('.scene').forEach(scene => scene.classList.remove('active'));
+            // Fade out current active scene
+            const currentScene = document.querySelector('.scene.active');
+            if (currentScene) {
+                currentScene.style.opacity = '0';
+                currentScene.style.transform = 'translateY(-20px)';
+            }
+
+            // Wait for fade-out, then switch and fade-in new scene
             setTimeout(() => {
+                if (currentScene) currentScene.classList.remove('active');
+                
                 const targetScene = document.getElementById(`scene-${sceneNumber}`);
                 targetScene.classList.add('active');
-            }, 300);
-
-            if(sceneNumber === 3) {
-                document.getElementById('chosen-fairy-name').innerText = chosenAvatarName + ' ' + chosenAvatarIcon;
-            }
-
-            if(sceneNumber === 4) {
-                document.body.style.backgroundColor = "#1a0b2e";
-            } else if(sceneNumber === 5) {
-                document.body.style.backgroundColor = "#2d0b22";
-            }
+                
+                // Extra setup for specific scenes
+                if (sceneNumber === 3) {
+                    setupScene3();
+                } else if (sceneNumber === 4) {
+                    activateWarmth();
+                }
+            }, 800); // Must match CSS transition time
         }
 
-        function igniteLight() {
-            document.getElementById('orb-text').style.display = 'block';
-            document.getElementById('scene-3-btn').style.display = 'inline-block';
+        // 3. Scene 3 setup (Heart Core interaction)
+        function setupScene3() {
+            document.getElementById('chosen-fairy-name-text').innerText = chosenAvatarName;
+            const fairyIcon = document.getElementById('drifting-fairy-icon');
+            fairyIcon.src = chosenAvatarImg; // Set the drifting fairy image to her choice
+        }
+
+        // 4. Heart Ignite Interaction
+        function igniteHeart() {
+            const heartCore = document.querySelector('.heart-core');
+            heartCore.style.animation = 'none'; // Stop pulse
+            heartCore.style.transform = 'scale(1.3)';
+            heartCore.style.boxShadow = '0 0 100px #fff, 0 0 50px var(--accent-pink)';
+            heartCore.style.background = 'radial-gradient(circle, #fff 0%, #ff758c 80%)';
             
-            // Boost particle brightness/count temporarily
-            for(let i = 0; i < 30; i++) {
+            // Boost particles dramatically
+            for(let i = 0; i < 80; i++) {
                 particles.push(new Particle(window.innerWidth / 2, window.innerHeight / 2, true));
             }
+
+            // Reveal the 'Continue' button after a delay
+            setTimeout(() => {
+                document.getElementById('scene-3-btn').style.display = 'inline-block';
+            }, 1000);
         }
 
+        // 5. Activate Warmth (Background Transformation)
+        function activateWarmth() {
+            // Add the class to the body that triggers the CSS background change and filter remove
+            document.getElementById('body').classList.add('warmed-up');
+        }
+
+        // 6. Final Secret Reveal
         function revealSecret() {
             const secretBox = document.getElementById('secret-note');
             secretBox.style.display = 'block';
-            secretBox.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                secretBox.style.opacity = '1';
+                secretBox.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
         }
 
-        /* Ambient Particle Canvas */
+        /* --- Ambient Particle Canvas (kept and optimized) --- */
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -291,45 +453,60 @@
         resizeCanvas();
 
         class Particle {
-            constructor(x, y, burst = false) {
+            constructor(x, y, isBurst = false) {
                 this.x = x || Math.random() * canvas.width;
                 this.y = y || Math.random() * canvas.height;
-                this.size = Math.random() * 3 + 1;
-                this.speedX = Math.random() * 1 - 0.5;
-                this.speedY = Math.random() * -1 - 0.2;
-                this.color = burst ? '#ffd700' : 'rgba(255, 255, 255, 0.5)';
-                this.alpha = Math.random() * 0.8 + 0.2;
+                this.size = isBurst ? (Math.random() * 5 + 2) : (Math.random() * 3 + 1);
+                this.speedX = isBurst ? (Math.random() * 10 - 5) : (Math.random() * 1 - 0.5);
+                this.speedY = isBurst ? (Math.random() * 10 - 5) : (Math.random() * -1 - 0.2);
+                this.color = isBurst ? (Math.random() > 0.5 ? '#ffd700' : '#ff758c') : 'rgba(255, 255, 255, 0.4)';
+                this.alpha = isBurst ? 1 : (Math.random() * 0.6 + 0.2);
+                this.decay = isBurst ? 0.02 : 0;
             }
 
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
-                if (this.y < 0) {
-                    this.y = canvas.height;
-                    this.x = Math.random() * canvas.width;
+                
+                if (this.decay > 0) {
+                    this.alpha -= this.decay;
+                } else {
+                    if (this.y < 0) {
+                        this.y = canvas.height;
+                        this.x = Math.random() * canvas.width;
+                    }
                 }
             }
 
             draw() {
-                ctx.save();
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
+                if (this.alpha > 0) {
+                    ctx.save();
+                    ctx.globalAlpha = this.alpha;
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
             }
         }
 
         function initParticles() {
             particles = [];
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < 70; i++) {
                 particles.push(new Particle());
             }
         }
 
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles = particles.filter(p => p.alpha > 0); // Remove dead particles
+            
+            // Maintain ambient count
+            while (particles.filter(p => p.decay === 0).length < 70) {
+                particles.push(new Particle());
+            }
+
             particles.forEach(particle => {
                 particle.update();
                 particle.draw();
