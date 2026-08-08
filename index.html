@@ -39,7 +39,7 @@
             width: 100%;
             height: 100%;
             z-index: -2;
-            background-image: url('assets/dark_background.jpg'); /* YOUR IMAGE HERE */
+            background-image: url('dark_background.png'); /* YOUR IMAGE HERE */
             background-size: cover;
             background-position: center;
             transition: background-image var(--transition-speed) ease-in-out, filter var(--transition-speed) ease-in-out;
@@ -48,7 +48,7 @@
 
         /* Class to apply when the heart warms up */
         body.warmed-up #background-layer {
-            background-image: url('assets/warm_background.jpg'); /* YOUR TRANSFORMED IMAGE */
+            background-image: url('warm_background.png'); /* YOUR TRANSFORMED IMAGE */
             filter: grayscale(0%) brightness(100%);
         }
 
@@ -299,13 +299,13 @@
             
             <div class="avatar-container">
                 <!-- Starlight Fairy Option -->
-                <div class="avatar-card selected" onclick="selectAvatar('Starlight Fairy', 'assets/fairy_starlight.png', this)">
-                    <img src="assets/fairy_starlight.png" alt="Starlight Fairy" class="avatar-img">
+                <div class="avatar-card selected" onclick="selectAvatar('Starlight Fairy', 'fairy_starlight.png', this)">
+                    <img src="fairy_starlight.png" alt="Starlight Fairy" class="avatar-img">
                     <div class="avatar-name">Starlight</div>
                 </div>
                 <!-- Flora Fairy Option -->
-                <div class="avatar-card" onclick="selectAvatar('Flora Fairy', 'assets/fairy_flora.png', this)">
-                    <img src="assets/fairy_flora.png" alt="Flora Fairy" class="avatar-img">
+                <div class="avatar-card" onclick="selectAvatar('Flora Fairy', 'fairy_flora.png', this)">
+                    <img src="fairy_flora.png" alt="Flora Fairy" class="avatar-img">
                     <div class="avatar-name">Flora</div>
                 </div>
             </div>
@@ -361,7 +361,7 @@
 
     <script>
         let chosenAvatarName = "Starlight Fairy";
-        let chosenAvatarImg = "assets/fairy_starlight.png";
+        let chosenAvatarImg = "fairy_starlight.png";
 
         // 1. Avatar Selection logic
         function selectAvatar(name, img, element) {
